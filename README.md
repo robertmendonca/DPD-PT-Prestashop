@@ -9,7 +9,7 @@ Este módulo permite disponibilizar métodos de envio DPD no checkout da loja, i
 > **Compatibilidade:** PrestaShop 8.x  
 > **Âmbito:** Portugal Continental, Portugal Ilhas, Espanha e Internacional, conforme os serviços contratados com a DPD.
 
-**PrestaShop 9.x:** em validação. O módulo pode funcionar, mas ainda requer teste funcional completo antes de ser considerado oficialmente compatível.
+> **PrestaShop 9.x:** em validação. O módulo pode funcionar, mas ainda requer teste funcional completo antes de ser considerado oficialmente compatível.
 ---
 
 ## Download do módulo
