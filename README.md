@@ -29,8 +29,7 @@ Pode visualizar o comportamento do módulo numa loja demo:
 https://demo-dpd.rgcconsulting.pt/
 
 **Backoffice demo:**
-
-https://demo-dpd.rgcconsulting.pt/admin340be9ii62vxyzfnd9y/
+https://demo-dpd.rgcconsulting.pt/admin347jaziuaw72gky9cvo/
 
 Dados de acesso ao backoffice demo:
 
