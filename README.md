@@ -1,4 +1,4 @@
-# RGC DPD PT - Módulo DPD Portugal para PrestaShop
+# Módulo DPD Portugal para PrestaShop
 
 Módulo gratuito para integrar serviços da **DPD Portugal** em lojas **PrestaShop 8.x**.
 
