@@ -67,7 +67,7 @@ Os números acima são apenas exemplos. Cada cliente deve preencher as contas re
 
 ## Instalação
 
-1. Faça download do ficheiro `.zip` do módulo.
+1. Faça download do ficheiro `rgcdpdpt-0.x.x.zip` do módulo.
 2. Aceda ao backoffice do PrestaShop.
 3. Vá a **Módulos > Gestor de módulos**.
 4. Clique em **Carregar um módulo**.
