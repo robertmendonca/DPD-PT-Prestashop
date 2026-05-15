@@ -1,450 +1,519 @@
 # Módulo DPD Portugal para PrestaShop
 
-Módulo gratuito para integrar serviços da **DPD Portugal** em lojas **PrestaShop 8.x**.
+Módulo de integração **DPD Portugal** para lojas **PrestaShop 8.x**.
 
-O módulo permite disponibilizar métodos de envio DPD no checkout, incluindo entrega ao domicílio e entrega em pontos **DPD Pickup / Shop**, e permite ao lojista criar expedições DPD diretamente a partir da encomenda no backoffice do PrestaShop.
+Este módulo permite disponibilizar métodos de envio DPD no checkout da loja, incluindo entrega ao domicílio e entrega em pontos Pickup/Shop, e permite criar expedições DPD a partir da encomenda no backoffice do PrestaShop.
 
-> Este repositório é destinado a clientes DPD. Para instalar o módulo, utilize apenas o ficheiro ZIP disponibilizado neste repositório.
+> **Versão atual:** 0.7.7  
+> **Nome do módulo:** RGC DPD PT  
+> **Compatibilidade:** PrestaShop 8.x  
+> **Âmbito:** Portugal Continental, Portugal Ilhas, Espanha e Internacional, conforme os serviços contratados com a DPD.
 
 ---
 
-## Conteúdo do repositório
+## Download do módulo
+
+Neste repositório, descarregue o ficheiro `.zip` do módulo e instale-o diretamente no backoffice do PrestaShop.
+
+Não é necessário descarregar código-fonte, executar comandos técnicos ou alterar ficheiros do módulo manualmente.
+
+---
+
+## Testar antes de instalar
+
+Pode visualizar o comportamento do módulo numa loja demo:
+
+**Loja demo:**
+
+https://demo-dpd.rgcconsulting.pt/
+
+**Backoffice demo:**
+
+https://demo-dpd.rgcconsulting.pt/admin340be9ii62vxyzfnd9y/
+
+Dados de acesso ao backoffice demo:
 
 ```text
-README.md
-rgcdpdpt-0.7.7.zip
+Email: demo@exemplo.com
+Password: Demo@Demo
 ```
 
-- `README.md`: guia de instalação, configuração e utilização.
-- `rgcdpdpt-0.7.7.zip`: ficheiro do módulo a instalar no PrestaShop.
-
-Não é necessário descompactar o ZIP manualmente. A instalação deve ser feita pelo gestor de módulos do PrestaShop.
+A loja demo serve para conhecer o fluxo de checkout, a seleção de pontos Pickup e o comportamento geral do módulo.
 
 ---
 
-## Funcionalidades principais
+## Para quem é este módulo
 
-- Criação automática dos métodos de envio DPD no PrestaShop.
-- Suporte a entrega ao domicílio e entrega em pontos DPD Pickup / Shop.
-- Pesquisa de pontos Pickup no checkout com base no código postal da morada de entrega.
-- Seleção de ponto Pickup pelo cliente antes de concluir a encomenda.
-- Mapa de pontos Pickup quando existirem coordenadas disponíveis.
-- Configuração de contas DPD por tipologia de serviço.
-- Configuração de portes por serviço.
-- Criação de expedição DPD no backoffice da encomenda.
-- Geração e abertura da etiqueta PDF da expedição.
-- Gravação do número de guia / tracking na encomenda.
-- Área de diagnóstico para validação da configuração e consulta de erros recentes.
+Este módulo destina-se a clientes DPD que utilizam PrestaShop e pretendem integrar os serviços DPD na sua loja online.
+
+Para criar expedições reais, é obrigatório ter uma conta DPD válida, credenciais API e contas DPD de serviço fornecidas pela DPD.
 
 ---
 
-## Requisitos
+## Principais funcionalidades
 
-Antes de instalar, confirme que a loja cumpre os seguintes requisitos:
+### No checkout da loja
 
-- PrestaShop 8.x.
-- PHP compatível com a versão do PrestaShop em utilização.
-- Extensão PHP cURL ativa.
-- Comunicação externa permitida entre o servidor da loja e os serviços da DPD.
-- Conta ativa na DPD Portugal.
-- Dados de acesso à API fornecidos pela DPD.
+- Apresenta métodos de envio DPD conforme a morada do cliente.
+- Suporta entrega ao domicílio através de serviços Home.
+- Suporta entrega em pontos Pickup/Shop.
+- Mostra lista e mapa de pontos Pickup quando o cliente escolhe um serviço Pickup/Shop.
+- Exige a seleção de um ponto Pickup antes da finalização da encomenda.
+- Usa ícones DPD nos métodos de envio e no mapa.
 
-Para a pesquisa de pontos Pickup, recomenda-se também que a extensão PHP SOAP esteja ativa. Quando SOAP não está disponível, o módulo tenta utilizar cURL como alternativa.
+### No backoffice do PrestaShop
 
-Para o mapa dos pontos Pickup, o browser do cliente precisa de conseguir carregar recursos externos de mapa, nomeadamente Leaflet e OpenStreetMap. Caso o mapa não carregue, a seleção pela lista de pontos pode continuar disponível.
-
----
-
-## Antes de instalar
-
-O módulo pode ser instalado sem credenciais, mas não conseguirá criar expedições enquanto os dados da DPD não forem configurados.
-
-Antes de iniciar a configuração, solicite à DPD os dados necessários para a sua conta.
-
-### Dados necessários da DPD
-
-Solicite à DPD:
-
-- Utilizador da API.
-- Palavra-passe da API.
-- Client ID, se aplicável.
-- Client Secret, se aplicável.
-- Conta DPD de 8 dígitos para cada serviço contratado.
-- Confirmação dos serviços ativos na sua conta.
-- Dados do expedidor / remetente.
-- Dados necessários para pesquisa de pontos Pickup, quando aplicável.
-- Confirmação de que o IP do servidor da loja está autorizado, caso a DPD utilize whitelist de IP.
-
-Sem estes dados, a ligação à API poderá falhar mesmo que o módulo esteja instalado corretamente.
+- Permite configurar credenciais e endpoints da API DPD.
+- Permite configurar contas DPD por tipologia de serviço.
+- Cria e repara automaticamente os transportadores DPD no PrestaShop.
+- Permite criar uma expedição DPD a partir da encomenda.
+- Guarda a guia DPD e a etiqueta PDF.
+- Atualiza o tracking da encomenda no PrestaShop.
+- Disponibiliza área de diagnóstico com logs e informação útil para suporte.
 
 ---
 
 ## Serviços DPD suportados
 
-O módulo está preparado para os seguintes serviços:
+O módulo trabalha por tipologia de serviço. Cada serviço deve ser ativado apenas se estiver contratado e validado pela DPD.
 
-| Serviço | Tipo de entrega | Destino previsto |
+| Serviço | Tipo de entrega | Destino |
 |---|---:|---|
-| DPD Portugal Home | Domicílio | Portugal continental |
-| DPD Portugal Shop / Pickup | Pickup | Portugal continental |
-| DPD Portugal Ilhas | Domicílio | Madeira e Açores |
-| DPD Espanha Home | Domicílio | Espanha |
-| DPD Espanha Shop / Pickup | Pickup | Espanha |
-| DPD Internacional Home | Domicílio | Outros países |
-| DPD Internacional Shop / Pickup | Pickup | Outros países |
+| DPD Portugal Home | Home | Portugal Continental |
+| DPD Portugal Shop | Pickup/Shop | Portugal Continental |
+| DPD Portugal Ilhas | Home | Madeira e Açores |
+| DPD Espanha Home | Home | Espanha |
+| DPD Espanha Shop | Pickup/Shop | Espanha |
+| DPD Internacional Home | Home | Países diferentes de Portugal e Espanha |
+| DPD Internacional Shop | Pickup/Shop | Países diferentes de Portugal e Espanha |
 
-Cada serviço deve ser ativado apenas se estiver contratado na conta DPD do cliente.
-
-As contas apresentadas por defeito no módulo são apenas exemplos. O cliente deve substituir esses valores pelas contas reais fornecidas pela DPD.
+Cada serviço utiliza uma **conta DPD de 8 dígitos**. As contas devem ser fornecidas pela DPD.
 
 ---
 
-## Instalação
+## Requisitos
 
-1. Faça download do ficheiro `rgcdpdpt-0.7.7.zip`.
-2. Aceda ao backoffice do PrestaShop.
+### Loja
+
+- PrestaShop 8.x.
+- Produtos físicos.
+- Backoffice com permissão para instalar módulos.
+- Países, zonas, moradas e transportadoras corretamente configurados.
+- Checkout compatível com o fluxo padrão do PrestaShop.
+
+### Servidor
+
+Recomendado:
+
+- PHP 8.1 ou superior.
+- Extensão PHP `curl` ativa.
+- Extensão PHP `json` ativa.
+- Extensão PHP `openssl` ativa.
+- Extensão PHP `soap` recomendada para pesquisa Pickup.
+
+Para o mapa Pickup, o front office precisa conseguir carregar recursos externos usados pelo Leaflet/OpenStreetMap.
+
+---
+
+## Antes de instalar: dados necessários da DPD
+
+Antes de configurar o módulo, solicite à DPD os dados da sua conta.
+
+Peça especificamente:
+
+- API username / utilizador API;
+- API password / password API;
+- client ID;
+- client secret;
+- URL OAuth/token;
+- URL de criação de expedição;
+- URL de pedido de recolha, se aplicável;
+- URL de fecho do dia/manifesto, se aplicável;
+- chave Pickup/MyPudo, se usar pontos Pickup/Shop;
+- contas DPD de 8 dígitos para cada serviço contratado.
+
+Sem estes dados, o módulo pode ser instalado, mas não conseguirá criar expedições reais.
+
+### Modelo de pedido à DPD
+
+```text
+Boa tarde,
+
+Preciso configurar o módulo DPD para PrestaShop.
+
+Podem enviar, por favor, os dados de API e as contas DPD de 8 dígitos para os serviços contratados?
+
+Serviços pretendidos:
+- Portugal Home
+- Portugal Shop/Pickup
+- Portugal Ilhas
+- Espanha Home
+- Espanha Shop/Pickup
+- Internacional Home
+- Internacional Shop/Pickup
+
+Obrigado.
+```
+
+---
+
+## Instalação pelo backoffice
+
+1. Descarregue o ficheiro ZIP do módulo.
+2. Entre no backoffice do PrestaShop.
 3. Vá a **Módulos > Gestor de módulos**.
 4. Clique em **Carregar um módulo**.
-5. Envie o ficheiro ZIP do módulo.
-6. Aguarde a instalação.
-7. Após instalar, clique em **Configurar**.
-
-Depois da instalação, o módulo cria os métodos de envio DPD correspondentes aos serviços ativos na configuração.
-
----
-
-## Atualização do módulo
-
-Antes de atualizar, recomenda-se fazer backup da loja e da base de dados.
-
-Para atualizar:
-
-1. Faça download da nova versão do ZIP.
-2. Aceda ao backoffice do PrestaShop.
-3. Vá a **Módulos > Gestor de módulos**.
-4. Carregue o novo ZIP do módulo.
-5. Confirme que a versão foi atualizada.
-6. Entre na configuração do módulo e clique em **Guardar configurações** ou **Reparar carriers**, se necessário.
-7. Faça uma encomenda de teste para validar checkout, portes, Pickup e criação de expedição.
+5. Selecione o ficheiro ZIP.
+6. Aguarde o upload terminar.
+7. Clique em **Instalar**.
+8. Abra a configuração do módulo **RGC DPD PT**.
 
 ---
 
-## Configuração
+## Configuração inicial
 
-A configuração do módulo é feita em abas no backoffice.
+Depois de instalar, aceda à configuração do módulo e preencha as abas principais.
 
-### 1. DPD
+### 1. Aba DPD
 
-Nesta aba são configurados os dados principais de ligação à API DPD.
+Preencha os dados técnicos fornecidos pela DPD:
 
-Campos principais:
+- modo de operação: QA/teste ou produção;
+- OAuth URL;
+- URL de criação de expedição;
+- URL de recolha, se aplicável;
+- URL de fecho do dia/manifesto, se aplicável;
+- API username;
+- API password;
+- client ID;
+- client secret.
 
-- Modo de operação.
-- URL de autenticação / token.
-- URL de criação de expedição.
-- URL de recolha.
-- URL de fecho do dia.
-- API username.
-- API password.
-- Client ID.
-- Client Secret.
+Depois de guardar, use o botão **Testar OAuth DPD**, se disponível, para validar a autenticação.
 
-Use os valores fornecidos ou confirmados pela DPD. Em produção, utilize os endpoints e credenciais de produção.
+### 2. Aba Tipologia de serviços / Contas DPD
 
-### 2. Tipologia de serviços / Contas DPD
+Configure os serviços contratados:
 
-Nesta aba são configurados os serviços DPD que a loja pode disponibilizar.
+- ativo/inativo;
+- conta DPD de 8 dígitos;
+- nome visível do transportador no checkout;
+- tipo de entrega: Home ou Pickup/Shop.
 
-Para cada serviço, configure:
+Ative apenas os serviços que foram contratados e validados pela DPD.
 
-- Estado ativo/inativo.
-- Conta DPD de 8 dígitos.
-- Nome visível no checkout.
-- Tipo de entrega: Home ou Pickup.
+### 3. Aba Expedidor / Shipper
 
-Ative apenas os serviços realmente contratados com a DPD. Se um serviço estiver ativo mas sem conta válida, o método de envio poderá não aparecer corretamente ou a expedição poderá falhar.
+Preencha os dados da empresa que envia a encomenda:
 
-### 3. Expedidor / Shipper
+- nome;
+- email;
+- telefone;
+- telemóvel;
+- morada;
+- código postal;
+- cidade;
+- país.
 
-Nesta aba são configurados os dados da empresa que envia as encomendas.
+Estes dados são enviados à DPD no pedido de criação da expedição.
 
-Preencha:
+### 4. Aba Operação
 
-- Nome do remetente.
-- Email.
-- Telefone.
-- Telemóvel, se aplicável.
-- Nome da empresa expedidora.
-- Morada.
-- Código postal.
-- Localidade.
-- País.
+Configure:
 
-Estes dados são utilizados na criação da expedição DPD.
+- peso máximo permitido;
+- Predict, se aplicável;
+- número de volumes por defeito;
+- formato da etiqueta;
+- ativação de logs.
 
-### 4. Operação
+### 5. Aba Pesquisa de pontos Pickup
 
-Nesta aba são configurados parâmetros operacionais.
+Se usar serviços Pickup/Shop, configure:
 
-Campos principais:
+- Pickup WSDL;
+- Pickup carrier code;
+- Pickup key;
+- quantidade máxima de pontos;
+- distância máxima.
 
-- Peso máximo permitido.
-- Predict ativo/inativo.
-- Número de volumes por defeito.
-- Formato da etiqueta.
-- Logs ativos/inativos.
+A chave Pickup/MyPudo deve ser fornecida pela DPD.
 
-Se a encomenda ultrapassar o peso máximo configurado, os métodos DPD podem não ficar disponíveis para essa encomenda.
+### 6. Aba Portes
 
-### 5. Pesquisa de pontos Pickup
+Defina o preço base de cada serviço DPD.
 
-Nesta aba são configurados os dados necessários para a pesquisa de pontos Pickup / Shop.
+O módulo usa estes valores para apresentar o custo de envio no checkout.
 
-Campos principais:
+### 7. Aba Diagnóstico
 
-- Pickup WSDL.
-- Código do carrier Pickup.
-- Chave Pickup.
-- Número máximo de pontos a apresentar.
-- Distância máxima de pesquisa.
+Use esta área para:
 
-Estes dados devem ser fornecidos ou confirmados pela DPD.
+- testar autenticação;
+- verificar serviços ativos;
+- consultar carriers configurados;
+- analisar mensagens de erro;
+- recolher informação para suporte.
 
-### 6. Portes
+---
 
-Nesta aba pode definir o preço base de cada serviço DPD.
+## Depois de configurar
 
-O preço configurado será utilizado pelo PrestaShop para apresentar o custo do método de envio no checkout.
+Após qualquer alteração importante:
 
-Depois de alterar valores de portes, guarde a configuração para sincronizar os métodos de envio.
-
-### 7. Diagnóstico
-
-Nesta aba pode:
-
-- Confirmar quais os serviços ativos.
-- Verificar as contas DPD configuradas.
-- Consultar os carriers criados no PrestaShop.
-- Consultar logs recentes.
-- Testar a autenticação OAuth com a DPD.
-
-Use esta aba sempre que ocorrer erro de ligação, erro de credenciais ou falha na criação da expedição.
+1. Clique em **Guardar configurações**.
+2. Clique em **Reparar carriers**.
+3. Limpe a cache do PrestaShop.
+4. Faça uma encomenda de teste.
+5. Confirme que o método DPD correto aparece no checkout.
+6. Confirme que a criação da expedição funciona no backoffice.
 
 ---
 
 ## Utilização no checkout
 
-Depois de configurado, o módulo disponibiliza os métodos DPD elegíveis no checkout, de acordo com:
+### Entrega Home
 
-- País da morada de entrega.
-- Código postal.
-- Peso da encomenda.
-- Serviços ativos no módulo.
-- Contas DPD preenchidas.
-- Portes configurados.
+O cliente escolhe o método DPD Home disponível para a sua morada e finaliza a compra normalmente.
 
-Quando o cliente escolhe um método Pickup, o módulo apresenta a pesquisa de pontos Pickup. O cliente deve selecionar um ponto antes de finalizar a encomenda.
+### Entrega Pickup/Shop
 
-Se nenhum ponto Pickup for selecionado, a encomenda não deve avançar com esse método de envio.
+Quando o cliente escolhe um serviço Pickup/Shop:
 
----
+1. O módulo carrega os pontos próximos com base no código postal da morada de entrega.
+2. O cliente pode escolher o ponto numa lista ou diretamente no mapa.
+3. A seleção do ponto Pickup é obrigatória.
+4. O ponto escolhido fica associado ao carrinho e à encomenda.
 
-## Criação de expedição no backoffice
-
-Após a encomenda ser criada:
-
-1. Aceda ao backoffice do PrestaShop.
-2. Abra a encomenda.
-3. Procure a área **DPD Portugal** na página da encomenda.
-4. Clique em **Criar expedição DPD**.
-5. Aguarde a resposta da DPD.
-
-Quando a expedição é criada com sucesso, o módulo guarda a informação da expedição e disponibiliza a etiqueta PDF.
-
-Se a DPD devolver o número de guia / tracking, o módulo grava essa informação na encomenda.
+O botão **Procurar pontos Pickup** serve para atualizar a pesquisa, por exemplo quando o cliente altera o código postal.
 
 ---
 
-## Etiqueta PDF e tracking
+## Criação da expedição DPD
 
-Na área **DPD Portugal** da encomenda, poderá ver:
+A expedição não é criada automaticamente no momento da compra.
 
-- Estado da expedição.
-- Número da guia / tracking, quando disponível.
-- Botão para abrir a etiqueta PDF.
-- Informação do ponto Pickup, quando aplicável.
-- Mensagens de erro, caso a expedição não tenha sido criada.
+Esta decisão evita criar expedições para encomendas ainda não pagas, canceladas, pendentes de validação ou ainda em preparação.
 
-Se a expedição for criada mas o número de guia não for identificado automaticamente, o módulo pode apresentar opções para tentar recuperar a guia ou inseri-la manualmente.
+Para criar a expedição:
 
----
+1. Entre no backoffice do PrestaShop.
+2. Vá a **Encomendas**.
+3. Abra a encomenda pretendida.
+4. Confirme que a encomenda está pronta para expedir.
+5. No bloco **DPD Portugal**, clique em **Criar expedição DPD**.
+6. Aguarde a resposta da DPD.
+7. Abra ou descarregue a etiqueta PDF.
+8. Imprima a etiqueta e prepare a encomenda.
 
-## Testes recomendados após configuração
+Depois da criação da expedição, o módulo guarda:
 
-Antes de colocar o módulo em uso real, recomenda-se testar:
-
-1. Checkout com entrega DPD Home para Portugal continental.
-2. Checkout com entrega DPD Pickup, selecionando um ponto Pickup.
-3. Checkout para ilhas, se esse serviço estiver contratado.
-4. Checkout para Espanha, se esse serviço estiver contratado.
-5. Criação de expedição numa encomenda de teste.
-6. Abertura da etiqueta PDF.
-7. Gravação do tracking na encomenda.
-8. Cálculo dos portes configurados.
-
-Faça estes testes com dados reais ou dados de teste autorizados pela DPD.
+- número da guia DPD;
+- etiqueta PDF;
+- tracking no PrestaShop;
+- resposta da DPD para diagnóstico.
 
 ---
 
-## Problemas frequentes
+## Atualização do módulo
 
-### O módulo instala, mas não cria expedições
+Para atualizar para uma nova versão:
 
-Verifique:
-
-- Se o utilizador da API está correto.
-- Se a palavra-passe da API está correta.
-- Se o Client ID e Client Secret estão corretos.
-- Se os endpoints configurados correspondem ao ambiente correto.
-- Se as contas DPD de 8 dígitos estão preenchidas.
-- Se o serviço está ativo na DPD.
-- Se o servidor tem cURL ativo.
-- Se o servidor consegue comunicar com a API da DPD.
-- Se o IP do servidor precisa de estar autorizado pela DPD.
-
-### O método de envio DPD não aparece no checkout
-
-Verifique:
-
-- Se o serviço está ativo no módulo.
-- Se a conta DPD do serviço foi preenchida.
-- Se o país e o código postal da morada correspondem ao serviço selecionado.
-- Se o peso da encomenda não ultrapassa o limite configurado.
-- Se o preço do porte foi configurado.
-- Se o carrier foi criado corretamente.
-- Se os grupos de clientes e zonas do PrestaShop permitem esse transportador.
-
-### O Pickup não aparece no checkout
-
-Verifique:
-
-- Se o serviço Pickup está ativo.
-- Se a conta DPD Pickup foi preenchida.
-- Se os dados da pesquisa Pickup estão preenchidos.
-- Se o cliente tem uma morada de entrega válida.
-- Se o código postal está correto.
-- Se o país da morada é suportado pelo serviço Pickup ativo.
-
-### O mapa Pickup não carrega
-
-Verifique:
-
-- Se o browser consegue carregar recursos externos.
-- Se existe algum bloqueador de scripts no browser.
-- Se o tema ou outro módulo está a bloquear JavaScript no checkout.
-- Se a DPD devolveu coordenadas para os pontos encontrados.
-
-Mesmo que o mapa não carregue, a seleção por lista pode continuar disponível.
-
-### A autenticação OAuth falha
-
-Verifique:
-
-- API username.
-- API password.
-- Client ID.
-- Client Secret.
-- URL de autenticação.
-- Ambiente configurado: teste/QA ou produção.
-- Whitelist de IP junto da DPD.
-
-Use o botão **Testar OAuth DPD** na aba Diagnóstico para validar a ligação.
-
-### A expedição falha para uma encomenda específica
-
-Verifique:
-
-- Dados da morada de entrega.
-- Código postal.
-- País.
-- Nome do cliente.
-- Telefone ou telemóvel.
-- Peso da encomenda.
-- Serviço DPD escolhido.
-- Conta DPD associada ao serviço.
-- Mensagem de erro apresentada pela DPD na área da encomenda ou no Diagnóstico.
+1. Faça backup da loja e da base de dados.
+2. Descarregue o novo ZIP do módulo.
+3. Instale ou atualize pelo backoffice do PrestaShop.
+4. Confirme que a versão foi atualizada.
+5. Abra a configuração do módulo.
+6. Clique em **Guardar configurações**.
+7. Clique em **Reparar carriers**.
+8. Limpe a cache do PrestaShop.
+9. Teste o checkout e a criação de expedição.
 
 ---
 
-## Segurança e privacidade
+## Resolução rápida de problemas
 
-- Não publique credenciais DPD em issues públicas, fóruns ou capturas de ecrã.
-- Não partilhe API username, API password, Client Secret ou Pickup Key.
-- Ao pedir suporte, oculte dados pessoais de clientes sempre que possível.
-- Evite publicar moradas, telefones, emails, números de guia ou payloads completos em locais públicos.
-- Mantenha o PrestaShop, PHP e servidor atualizados.
-- Faça backup antes de instalar ou atualizar módulos.
+### Os métodos DPD não aparecem no checkout
+
+Verifique:
+
+- se o módulo está instalado e ativo;
+- se os serviços DPD estão ativos na configuração;
+- se as contas DPD de 8 dígitos estão preenchidas;
+- se clicou em **Reparar carriers**;
+- se a morada do cliente está completa;
+- se o país/região é abrangido pelo serviço ativo;
+- se o peso do carrinho não ultrapassa o limite configurado;
+- se os produtos são físicos;
+- se a cache do PrestaShop foi limpa.
+
+### O mapa Pickup não aparece
+
+Verifique:
+
+- se o cliente selecionou um método Pickup/Shop;
+- se a morada tem código postal válido;
+- se a chave Pickup/MyPudo foi preenchida;
+- se o servidor consegue comunicar com o webservice Pickup;
+- se o tema da loja não bloqueia JavaScript;
+- se o front office consegue carregar recursos externos do mapa.
+
+### A expedição DPD falha
+
+Verifique:
+
+- API username e API password;
+- client ID e client secret;
+- endpoint usado: QA/teste ou produção;
+- conta DPD associada ao serviço escolhido;
+- permissões da conta na DPD;
+- IP autorizado, se aplicável;
+- morada do destinatário;
+- telefone/telemóvel do destinatário;
+- ponto Pickup selecionado, no caso de Pickup/Shop;
+- mensagem apresentada na aba **Diagnóstico**.
+
+### A guia não aparece, mas a etiqueta foi criada
+
+Se a API devolver a etiqueta mas não devolver a guia num campo reconhecido, o bloco DPD da encomenda pode permitir:
+
+- recuperar a guia a partir da resposta guardada;
+- recuperar a guia a partir da etiqueta;
+- inserir a guia manualmente.
 
 ---
 
-## Desinstalação
+## Perguntas frequentes
 
-A desinstalação do módulo pode remover configurações, registos internos de Pickup, expedições e logs associados ao módulo.
+### O módulo é gratuito?
 
-Antes de desinstalar em ambiente de produção, faça backup da base de dados e confirme se ainda precisa de consultar informações antigas de expedições ou etiquetas.
+Sim. O módulo é disponibilizado gratuitamente para clientes DPD.
+
+### Posso usar o módulo sem contrato com a DPD?
+
+Pode instalar, mas não conseguirá criar expedições reais sem credenciais e contas DPD válidas.
+
+### A DPD fornece os dados que devo preencher?
+
+Sim. As credenciais API, endpoints, chave Pickup e contas DPD devem ser solicitadas à DPD.
+
+### Posso ativar apenas alguns serviços?
+
+Sim. Deve ativar apenas os serviços contratados e validados pela DPD.
+
+### O módulo suporta Portugal Ilhas?
+
+Sim. Existe serviço específico para Madeira e Açores, desde que a respetiva conta DPD esteja configurada.
+
+### O módulo suporta Espanha e Internacional?
+
+Sim, desde que os serviços estejam contratados e as contas DPD correspondentes estejam configuradas.
+
+### O mapa Pickup aparece automaticamente?
+
+Sim. Quando o cliente seleciona um serviço Pickup/Shop, o módulo carrega os pontos automaticamente com base no código postal da morada de entrega.
+
+### A expedição é criada automaticamente?
+
+Não. Nesta versão, a criação da expedição é manual no backoffice da encomenda.
+
+### O módulo calcula portes avançados por peso, valor ou categoria?
+
+Nesta versão, o módulo trabalha com preço base por serviço. Regras avançadas de portes por peso, valor, categoria ou país/região não estão incluídas.
+
+---
+
+## Limitações atuais
+
+Nesta versão, o módulo ainda não inclui:
+
+- criação automática de expedição por mudança de estado da encomenda;
+- pedido de recolha diretamente pelo backoffice;
+- fecho do dia/manifesto pelo backoffice;
+- cancelamento de expedição;
+- tracking detalhado por API;
+- regras avançadas de portes por peso, valor, categoria ou país/região.
 
 ---
 
 ## Suporte
 
-Este módulo é disponibilizado gratuitamente para clientes DPD.
+O módulo é disponibilizado gratuitamente.
 
-A instalação e configuração básica podem estar incluídas num apoio inicial de até **15 minutos**, conforme acordo com a DPD.
+Cada cliente tem direito a **15 minutos gratuitos de apoio inicial pela DPD** para instalação ou primeira configuração.
 
-Caso seja necessário apoio adicional, poderá ser cobrado um pack de suporte de:
+Após esse período, o suporte técnico adicional é cobrado em packs de:
 
-**20€ + IVA por cada pack adicional de 30 minutos**
+```text
+20 EUR + IVA por pack adicional de 30 minutos
+```
 
 O suporte pode incluir:
 
-- Instalação do módulo.
-- Configuração inicial.
-- Validação dos dados DPD.
-- Apoio em erros de ligação à API.
-- Apoio na configuração de métodos de envio.
-- Apoio na validação de Pickup, etiquetas e tracking.
+- instalação assistida;
+- configuração das contas DPD;
+- validação dos carriers;
+- análise de erros no checkout;
+- análise de erros da API;
+- validação do fluxo Pickup;
+- testes de criação de expedição.
 
-O suporte não inclui, salvo acordo específico:
+### Dados úteis para pedir suporte
 
-- Correções em temas personalizados.
-- Problemas gerais do PrestaShop.
-- Desenvolvimento à medida.
-- Alterações específicas fora do funcionamento padrão do módulo.
-- Correção de problemas causados por outros módulos.
-- Configuração avançada do servidor ou da loja não relacionada diretamente com a DPD.
+Ao pedir suporte, envie:
 
-Antes de pedir suporte, tenha disponível:
+```text
+Loja: https://exemplo.pt
+PrestaShop: 8.x
+PHP: 8.x
+Módulo: 0.7.7
+Ambiente: QA/teste ou produção
+Serviço DPD usado: Portugal Home / Portugal Shop / Ilhas / Espanha / Internacional
+Erro apresentado:
+Passos para reproduzir:
+```
 
-- Versão do PrestaShop.
-- Versão do PHP.
-- Versão do módulo.
-- Serviço DPD afetado.
-- Mensagem de erro apresentada.
-- Confirmação dos dados fornecidos pela DPD.
-- Exemplo de encomenda afetada, sem expor dados sensíveis publicamente.
-
----
-
-## Utilização autorizada
-
-Este módulo é disponibilizado gratuitamente para utilização por clientes DPD.
-
-A redistribuição, alteração, revenda ou utilização comercial fora deste contexto deve respeitar os termos definidos pelo proprietário do módulo.
+Também pode ser útil enviar prints da configuração, da encomenda e da mensagem de erro, desde que não contenham credenciais nem dados pessoais sensíveis.
 
 ---
 
-## Versão
+## Segurança
 
-Versão documentada: **0.7.7**
+Nunca publique em issues, screenshots, fóruns ou repositórios públicos:
 
-Autor: **RGC Consulting**
+- API password;
+- client secret;
+- chave Pickup/MyPudo;
+- tokens OAuth;
+- etiquetas PDF reais;
+- dados pessoais de clientes;
+- moradas completas de clientes;
+- payloads completos de expedições reais;
+- logs com dados pessoais.
+
+Se uma credencial for exposta por engano, contacte a DPD e solicite a substituição/rotação da credencial.
+
+---
+
+## Responsabilidade de configuração
+
+O correto funcionamento do módulo depende de:
+
+- credenciais DPD válidas;
+- serviços contratados e ativos na DPD;
+- contas DPD corretas por serviço;
+- endpoints corretos para QA/teste ou produção;
+- configuração correta da loja PrestaShop;
+- servidor com extensões PHP necessárias.
+
+Alguns erros podem depender da validação da própria DPD, por exemplo credenciais inválidas, IP não autorizado, conta sem permissão para Pickup ou serviço contratado diferente do serviço configurado.
+
+---
+
+## Créditos
+
+Desenvolvido por **RGC Consulting** para integração DPD Portugal em PrestaShop.
+
+## Apoie o meu trabalho ☕  
+Se este projeto te ajudou, considera comprar-me um café:  
+
+[![Buy Me a Coffee](https://github.com/user-attachments/assets/e5e0b7a8-4ec3-4a20-b5c8-07301078a283)](https://www.buymeacoffee.com/robertmendonca)
